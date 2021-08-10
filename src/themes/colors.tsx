@@ -1,0 +1,7 @@
+export const PRIMARY_BG_COLOR: string = '#F5F9F8'
+export const BLACK_BORDER_COLOR: string = '#000000'
+export const GREEN_BORDER_COLOR: string = '#52AD82'
+export const PRIMARY_COLOR: string = '#F46144'
+export const SECONDARY_COLOR: string = '#57B583'
+export const BLACK_COLOR: string = '#000000'
+export const WHITE_COLOR: string = '#FFFFFF'
