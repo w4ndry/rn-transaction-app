@@ -3,7 +3,6 @@ import { Text, StyleSheet } from 'react-native'
 
 import { FONT_SIZE_NORMAL, FONT_WEIGHT_REGULAR, LINE_HEIGHT_20 } from '../../themes/themes'
 
-
 type Props = {
     style?: React.CSSProperties | {},
     children: React.ReactNode,
@@ -11,7 +10,7 @@ type Props = {
 
 const Label: FC<Props> = ({ style, children }: Props) => {
     return (
-        <Text style={[styles.buttonText, style]}>
+        <Text style={[styles.text, style]}>
             {children}
         </Text>
     )
@@ -20,7 +19,7 @@ const Label: FC<Props> = ({ style, children }: Props) => {
 export { Label }
 
 const styles = StyleSheet.create({
-    buttonText: {
+    text: {
         fontWeight: FONT_WEIGHT_REGULAR,
         fontSize: FONT_SIZE_NORMAL,
         lineHeight: LINE_HEIGHT_20,
