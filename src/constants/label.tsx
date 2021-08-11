@@ -1,0 +1,5 @@
+export const LIHAT_TRANSAKSI: string = 'Lihat Transaksi'
+export const PENGECEKAN: string = 'Pengecekan'
+export const BERHASIL: string = 'Berhasil'
+export const PENDING: string = 'PENDING'
+export const SUCCESS: string = 'SUCCESS'

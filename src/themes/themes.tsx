@@ -11,6 +11,12 @@ export const FONT_WEIGHT_BOLD: any = '700'
 // Line Height
 export const LINE_HEIGHT_20: number = 20
 
+// Margin
+export const MARGIN_TOP: number = 10
+export const MARGIN_BOTTOM: number = 10
+export const MARGIN_LEFT: number = 10
+export const MARGIN_RIGHT: number = 10
+
 // Padding
 export const PADDING_TOP: number = 10
 export const PADDING_BOTTOM: number = 10
