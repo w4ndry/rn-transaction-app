@@ -21,19 +21,12 @@ export { Card }
 
 const styles = StyleSheet.create({
     container: {
+        alignItems: 'center',
         backgroundColor: WHITE_COLOR,
         borderRadius: BORDER_RADIUS_MEDIUM,
         paddingTop: PADDING_TOP_CARD,
         paddingBottom: PADDING_BOTTOM_CARD,
         paddingLeft: PADDING_LEFT_CARD,
         paddingRight: PADDING_RIGHT_CARD,
-    },
-    leftFlag: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: 10,
-        height: '100%',
-        backgroundColor: PRIMARY_COLOR,
     },
 })
