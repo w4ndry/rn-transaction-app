@@ -1,20 +1,22 @@
 import React, { FC } from 'react'
 import { StyleSheet, View, TextInput, Image, Pressable } from 'react-native'
-import { MARGIN_BOTTOM, MARGIN_LEFT, MARGIN_RIGHT, BORDER_RADIUS_NORMAL, FONT_WEIGHT_BOLD, FONT_SIZE_SMALL, LINE_HEIGHT_20 } from '../../../themes/themes'
+import { MARGIN_BOTTOM, MARGIN_RIGHT, BORDER_RADIUS_NORMAL, FONT_WEIGHT_BOLD, FONT_SIZE_SMALL } from '../../../themes/themes'
 import { Card } from '../../../components/cards'
-import { SEARCH_PLACEHOLDER, URUTKAN } from '../../../constants/label'
+import { SEARCH_PLACEHOLDER } from '../../../constants/label'
 import { Label } from '../../../components/texts'
 import { LINE_HEIGHT_16 } from '../../../themes/themes'
-import { GREY_COLOR, DARK_GREY_COLOR } from '../../../themes/colors'
+import { GREY_COLOR, DARK_GREY_COLOR, PRIMARY_COLOR } from '../../../themes/colors'
 
 
 type Props = {
     value: string,
     onChange: (text: string) => void,
     clearSearch: () => void,
+    sortValue: string,
+    setModalVisible: (visible: boolean) => void,
 }
 
-const ListHeaderComponent: FC<Props> = ({ value, onChange, clearSearch }: Props) => {
+const ListHeaderComponent: FC<Props> = ({ value, onChange, clearSearch, sortValue, setModalVisible }: Props) => {
     const renderButtonClearText = () => {
         if (value.length > 0) {
             return (
@@ -43,11 +45,11 @@ const ListHeaderComponent: FC<Props> = ({ value, onChange, clearSearch }: Props)
                     {renderButtonClearText()}
                 </View>
             </View>
-            <Pressable style={styles.sortedContainer}>
-                <Label style={styles.sortedText}>{URUTKAN}</Label>
+            <Pressable style={styles.sortedContainer} onPress={() => setModalVisible(true)}>
+                <Label style={styles.sortedText}>{sortValue}</Label>
                 <Image
                     source={require('../../../assets/icons/outline_keyboard_arrow_down_black_48.png')}
-                    style={styles.iconSearch}
+                    style={styles.iconDropdown}
                 />
             </Pressable>
         </Card>
@@ -102,5 +104,11 @@ const styles = StyleSheet.create({
     sortedText: {
         fontWeight: FONT_WEIGHT_BOLD,
         fontSize: FONT_SIZE_SMALL,
-    }
+        color: PRIMARY_COLOR,
+    },
+    iconDropdown: {
+        width: 30,
+        height: 30,
+        tintColor: PRIMARY_COLOR,
+    },
 })

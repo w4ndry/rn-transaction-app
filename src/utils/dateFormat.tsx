@@ -23,3 +23,10 @@ export function formatDate(date: string) {
 
     return `${day} ${month} ${year}`;
 }
+
+export function dateToMilliseconds(date: string) {
+    let parseDate = date.split('-').join('/')
+    let d = new Date(parseDate)
+
+    return d.getTime();
+}
