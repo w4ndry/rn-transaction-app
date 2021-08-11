@@ -4,13 +4,13 @@ import { SafeAreaView, StyleSheet } from 'react-native'
 import { PADDING_LEFT, PADDING_RIGHT, PADDING_TOP, PADDING_BOTTOM } from '../../themes/themes'
 
 type Props = {
-    containerStyles?: React.CSSProperties | {},
+    style?: React.CSSProperties | {},
     children: React.ReactNode,
 }
 
-const Container: FC<Props> = ({ containerStyles, children }: Props) => {
+const Container: FC<Props> = ({ style, children }: Props) => {
     return (
-        <SafeAreaView style={[styles.container, containerStyles]}>
+        <SafeAreaView style={[styles.container, style]}>
             {children}
         </SafeAreaView>
     )
