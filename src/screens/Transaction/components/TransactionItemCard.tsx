@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Pressable } from 'react-native'
 import { BORDER_RADIUS_MEDIUM, PADDING_LEFT_CARD, MARGIN_LEFT, PADDING_LEFT, MARGIN_RIGHT } from '../../../themes/themes'
 import { PRIMARY_COLOR } from '../../../themes/colors'
 import { Card } from '../../../components/cards/Card'
@@ -9,26 +9,23 @@ type Props = {
     style?: React.CSSProperties | {},
     flagStyle?: React.CSSProperties | {},
     children: React.ReactNode,
+    onPress?: () => void,
 }
 
-const TransactionItemCard: FC<Props> = ({ style, flagStyle, children }: Props) => {
+const TransactionItemCard: FC<Props> = ({ style, flagStyle, children, onPress }: Props) => {
     return (
-        <View style={styles.container}>
+        <Pressable onPress={onPress}>
             <Card style={[styles.card, style]}>
                 {children}
             </Card>
             <View style={[styles.leftFlag, flagStyle]} />
-        </View>
+        </Pressable>
     )
 }
 
 export default TransactionItemCard
 
 const styles = StyleSheet.create({
-    container: {
-        // marginLeft: MARGIN_LEFT,
-        // marginRight: MARGIN_RIGHT,
-    },
     card: {
         flexDirection: 'row',
         justifyContent: 'space-between',

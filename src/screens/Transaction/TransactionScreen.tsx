@@ -12,13 +12,27 @@ import { DATA_TIDAK_DITEMUKAN, URUTKAN } from '../../constants/label'
 import SortedModal from './components/SortedModal'
 import { contains, sortedBy } from '../../utils/searchAndFilter'
 import { FooterLoading } from '../../components/spinners/FooterLoading'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+
+type RootStackParamList = {
+    Transaction: undefined,
+    TransactionDetail: undefined,
+}
+
+type TransactionScreenNavigationProp = NativeStackNavigationProp<
+    RootStackParamList,
+    'Transaction'
+>
+
+type Props = {
+    navigation: TransactionScreenNavigationProp
+}
 
 const wait = (timeout: number) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-
-const TransactionScreen: FC = () => {
+const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
     const [transactions, setTransactions] = useState(data)
     const [tempData, setTempData] = useState(data)
     const [searchText, setSearchText] = useState('')
@@ -72,7 +86,7 @@ const TransactionScreen: FC = () => {
     }
 
     const onRefresh = useCallback(() => {
-        
+
         setRefreshing(true)
         setCurrentPage(1)
         wait(2000).then(() => setRefreshing(false));
@@ -101,6 +115,7 @@ const TransactionScreen: FC = () => {
                 amount={item.amount}
                 date={item.created_at}
                 status={item.status}
+                onPress={() => navigation.navigate('TransactionDetail', {item})}
             />
         )
     }
