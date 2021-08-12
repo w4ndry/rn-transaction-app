@@ -13,21 +13,7 @@ import { View, StyleSheet, Pressable, Image, Animated, TouchableOpacity, Clipboa
 import { PADDING, PADDING_TOP, BORDER_WIDTH_REGULAR, PADDING_RIGHT, FONT_WEIGHT_BOLD, FONT_SIZE_MEDIUM, MARGIN_BOTTOM, MARGIN_TOP } from '../../themes/themes'
 import { ID_TRANSAKSI, DETAIL_TRANSAKSI, TUTUP, LIHAT, BERITA_TRANSFER, KODE_UNIK, WAKTU_DIBUAT, NOMINAL } from '../../constants/label'
 import BankName from './components/BankName'
-
-interface TransactionItem {
-    id: string,
-    amount: number,
-    unique_code: number,
-    status: string,
-    sender_bank: string,
-    account_number: string,
-    beneficiary_name: string,
-    beneficiary_bank: string,
-    remark: string,
-    created_at: string,
-    completed_at: string,
-    fee: number,
-}
+import { TransactionItem } from './types'
 
 type RootStackParamList = {
     TransactionDetail: { item: TransactionItem }

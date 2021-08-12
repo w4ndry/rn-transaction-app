@@ -1,10 +1,9 @@
-import React, { FC, useState, useCallback } from 'react'
-import { FlatList, StyleSheet } from 'react-native'
+import React, { FC, useState, useCallback, useEffect } from 'react'
+import { FlatList, StyleSheet, Alert } from 'react-native'
 
 import Item from './components/Item'
 import ItemSeparator from './components/ItemSeparator'
 import { Container } from '../../components/container'
-import { transactions as data } from '../../dummy/transactions'
 import { PADDING_LEFT, PADDING_RIGHT, PADDING_BOTTOM } from '../../themes/themes'
 import ListHeaderComponent from './components/ListHeaderComponent'
 import { EmptyItem } from '../../components/texts/EmptyItem'
@@ -13,6 +12,9 @@ import SortedModal from './components/SortedModal'
 import { contains, sortedBy } from '../../utils/searchAndFilter'
 import { FooterLoading } from '../../components/spinners/FooterLoading'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { get } from '../../services/APIService'
+import { TransactionItem } from './types'
+import { Spinner } from '../../components/spinners/Spinner'
 
 type RootStackParamList = {
     Transaction: undefined,
@@ -33,8 +35,8 @@ const wait = (timeout: number) => {
 }
 
 const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
-    const [transactions, setTransactions] = useState(data)
-    const [tempData, setTempData] = useState(data)
+    const [transactions, setTransactions] = useState<TransactionItem[]>([])
+    const [tempData, setTempData] = useState<TransactionItem[]>([])
     const [searchText, setSearchText] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
     const [sortValue, setSortValue] = useState(URUTKAN)
@@ -42,6 +44,26 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
     const [loadMore, setLoadMore] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPage, setTotalPage] = useState(2)
+    const [isloading, setIsLoading] = useState(true)
+
+    const getTransaction = async () => {
+        try {
+
+            const response = await get('https://nextar.flip.id/frontend-test')
+            const data: TransactionItem[] = Object.values(response)        
+            setTransactions(data)
+            setTempData(data)
+            setIsLoading(false)
+            
+        } catch (error) {
+            setIsLoading(false)
+            Alert.alert(JSON.stringify(error))
+        }
+    }
+
+    useEffect(() => {
+        getTransaction()
+    }, [])
 
     const handleSearch = (text: string) => {
         setSearchText(text)
@@ -115,9 +137,15 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 amount={item.amount}
                 date={item.created_at}
                 status={item.status}
-                onPress={() => navigation.navigate('TransactionDetail', {item})}
+                onPress={() => navigation.navigate('TransactionDetail', { item })}
             />
         )
+    }
+
+    const renderEmptyItem = () => {
+        if (isloading) return <Spinner />
+
+        return <EmptyItem text={DATA_TIDAK_DITEMUKAN} />
     }
 
     return (
@@ -128,6 +156,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 clearSearch={clearSearch}
                 sortValue={sortValue}
                 setModalVisible={setModalVisible}
+                isLoading={isloading}
             />
             <FlatList
                 data={transactions}
@@ -138,7 +167,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 ItemSeparatorComponent={ItemSeparator}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
-                ListEmptyComponent={<EmptyItem text={DATA_TIDAK_DITEMUKAN} />}
+                ListEmptyComponent={renderEmptyItem}
                 onEndReachedThreshold={0.1}
                 onEndReached={loadMoreData}
                 ListFooterComponent={<FooterLoading loadMore={loadMore} />}
