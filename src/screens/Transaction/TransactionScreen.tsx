@@ -115,7 +115,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 amount={item.amount}
                 date={item.created_at}
                 status={item.status}
-                onPress={() => navigation.navigate('TransactionDetail')}
+                onPress={() => navigation.navigate('TransactionDetail', {item})}
             />
         )
     }
