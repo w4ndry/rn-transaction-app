@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useCallback } from 'react'
 import { FlatList, StyleSheet } from 'react-native'
 
 import Item from './components/Item'
@@ -11,6 +11,12 @@ import { EmptyItem } from '../../components/texts/EmptyItem'
 import { DATA_TIDAK_DITEMUKAN, URUTKAN } from '../../constants/label'
 import SortedModal from './components/SortedModal'
 import { contains, sortedBy } from '../../utils/searchAndFilter'
+import { FooterLoading } from '../../components/spinners/FooterLoading'
+
+const wait = (timeout: number) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 
 const TransactionScreen: FC = () => {
     const [transactions, setTransactions] = useState(data)
@@ -18,6 +24,10 @@ const TransactionScreen: FC = () => {
     const [searchText, setSearchText] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
     const [sortValue, setSortValue] = useState(URUTKAN)
+    const [refreshing, setRefreshing] = useState(false)
+    const [loadMore, setLoadMore] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(2)
 
     const handleSearch = (text: string) => {
         setSearchText(text)
@@ -61,6 +71,27 @@ const TransactionScreen: FC = () => {
         setModalVisible(false)
     }
 
+    const onRefresh = useCallback(() => {
+        
+        setRefreshing(true)
+        setCurrentPage(1)
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+
+    const loadMoreData = async () => {
+        try {
+            if (!loadMore && currentPage < totalPage) {
+                console.log('currentPage', currentPage);
+                setLoadMore(true)
+                await wait(2000)
+                setCurrentPage(currentPage + 1)
+                setLoadMore(false)
+            }
+        } catch (error) {
+            setLoadMore(false)
+        }
+    }
+
     const renderItem = ({ item }: any) => {
         return (
             <Item
@@ -86,11 +117,16 @@ const TransactionScreen: FC = () => {
             <FlatList
                 data={transactions}
                 extraData={transactions}
+                contentContainerStyle={styles.content}
+                refreshing={refreshing}
+                onRefresh={() => onRefresh()}
                 ItemSeparatorComponent={ItemSeparator}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 ListEmptyComponent={<EmptyItem text={DATA_TIDAK_DITEMUKAN} />}
-                contentContainerStyle={styles.content}
+                onEndReachedThreshold={0.1}
+                onEndReached={loadMoreData}
+                ListFooterComponent={<FooterLoading loadMore={loadMore} />}
             />
             <SortedModal
                 modalVisible={modalVisible}
