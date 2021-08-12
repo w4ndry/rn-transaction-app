@@ -14,9 +14,10 @@ type Props = {
     clearSearch: () => void,
     sortValue: string,
     setModalVisible: (visible: boolean) => void,
+    isLoading: boolean,
 }
 
-const ListHeaderComponent: FC<Props> = ({ value, onChange, clearSearch, sortValue, setModalVisible }: Props) => {
+const ListHeaderComponent: FC<Props> = ({ value, onChange, clearSearch, sortValue, setModalVisible, isLoading }: Props) => {
     const renderButtonClearText = () => {
         if (value.length > 0) {
             return (
@@ -41,11 +42,12 @@ const ListHeaderComponent: FC<Props> = ({ value, onChange, clearSearch, sortValu
                         style={styles.inputSearch}
                         value={value}
                         onChangeText={text => onChange(text)}
+                        editable={!isLoading}
                     />
                     {renderButtonClearText()}
                 </View>
             </View>
-            <Pressable style={styles.sortedContainer} onPress={() => setModalVisible(true)}>
+            <Pressable style={styles.sortedContainer} onPress={() => setModalVisible(true)} disabled={isLoading}>
                 <Label style={styles.sortedText}>{sortValue}</Label>
                 <Image
                     source={require('../../../assets/icons/outline_keyboard_arrow_down_black_48.png')}
