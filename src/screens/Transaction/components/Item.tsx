@@ -19,9 +19,10 @@ type Props = {
     date: string,
     status: string,
     onPress: () => void,
+    disabled: boolean,
 }
 
-const Item: FC<Props> = ({ senderBank, beneficiaryBank, beneficiaryName, amount, date, status, onPress }: Props) => {
+const Item: FC<Props> = ({ senderBank, beneficiaryBank, beneficiaryName, amount, date, status, onPress, disabled }: Props) => {
     const renderLabelStatus = (status: string) => {
         if (status == PENDING) {
             return <SecondaryLabelStatus title={PENGECEKAN} />
@@ -32,7 +33,7 @@ const Item: FC<Props> = ({ senderBank, beneficiaryBank, beneficiaryName, amount,
     const flagStyle = status == SUCCESS ? {backgroundColor: SECONDARY_COLOR} : {}
     
     return (
-        <TransactionItemCard flagStyle={flagStyle} onPress={onPress}>
+        <TransactionItemCard flagStyle={flagStyle} onPress={onPress} disabled={disabled}>
             <View style={styles.textWrapper}>
                 <BankName
                     senderBank={toTitleCase(senderBank)}

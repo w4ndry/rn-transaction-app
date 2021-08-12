@@ -107,17 +107,17 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         setModalVisible(false)
     }
 
-    const onRefresh = useCallback(() => {
+    const onRefresh = useCallback(async () => {
 
         setRefreshing(true)
+        await getTransaction()
         setCurrentPage(1)
-        wait(2000).then(() => setRefreshing(false));
+        setRefreshing(false)
     }, []);
 
     const loadMoreData = async () => {
         try {
             if (!loadMore && currentPage < totalPage) {
-                console.log('currentPage', currentPage);
                 setLoadMore(true)
                 await wait(2000)
                 setCurrentPage(currentPage + 1)
@@ -126,6 +126,11 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         } catch (error) {
             setLoadMore(false)
         }
+    }
+
+    const disabled = () => {
+        if (isloading || refreshing || loadMore) return true
+        return false
     }
 
     const renderItem = ({ item }: any) => {
@@ -138,6 +143,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 date={item.created_at}
                 status={item.status}
                 onPress={() => navigation.navigate('TransactionDetail', { item })}
+                disabled={disabled()}
             />
         )
     }
@@ -156,7 +162,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 clearSearch={clearSearch}
                 sortValue={sortValue}
                 setModalVisible={setModalVisible}
-                isLoading={isloading}
+                disabled={disabled()}
             />
             <FlatList
                 data={transactions}
