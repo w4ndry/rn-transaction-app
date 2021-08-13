@@ -15,6 +15,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { get } from '../../services/APIService'
 import { TransactionItem } from './types'
 import { Spinner } from '../../components/spinners/Spinner'
+import { toTitleCase, capitalize, currencyFormat } from '../../utils/stringManipulation'
+import { formatDate } from '../../utils/dateFormat'
 
 type RootStackParamList = {
     Transaction: undefined,
@@ -30,6 +32,7 @@ type Props = {
     navigation: TransactionScreenNavigationProp
 }
 
+// Promise function for acting fetch next page data in loadmore
 const wait = (timeout: number) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
@@ -67,15 +70,15 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
 
     const handleSearch = (text: string) => {
         setSearchText(text)
-        let temp = tempData
 
-        let filtered = temp.filter(item => {
+        let filtered = transactions.filter(item => {
             let query = text.toLowerCase()
             return contains(item, query)
         })
         setTransactions(filtered)
         handleSort(sortValue, filtered)
 
+        // Rollback transaction data when no input search text
         if (text.length <= 0) {
             setTransactions(tempData)
             handleSort(sortValue, tempData)
@@ -92,12 +95,15 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         setSortValue(value)
 
         if (value == URUTKAN) {
+            // Set data to initial value
             if (data == undefined) {
                 setTransactions(transactions)
             } else {
                 setTransactions(data)
             }
         } else {
+            // sorted data
+            // Create new array for sorting, need this because sort updating the default data
             let temp = data == undefined ? transactions.slice(0) : data.slice(0)
             let sorted = temp.sort((a, b) => {
                 return sortedBy(a, b, value)
@@ -107,17 +113,17 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         setModalVisible(false)
     }
 
-    const onRefresh = useCallback(() => {
+    const onRefresh = useCallback(async () => {
 
         setRefreshing(true)
+        await getTransaction()
         setCurrentPage(1)
-        wait(2000).then(() => setRefreshing(false));
+        setRefreshing(false)
     }, []);
 
     const loadMoreData = async () => {
         try {
-            if (!loadMore && currentPage < totalPage) {
-                console.log('currentPage', currentPage);
+            if (searchText == '' && !loadMore && currentPage < totalPage) {
                 setLoadMore(true)
                 await wait(2000)
                 setCurrentPage(currentPage + 1)
@@ -128,16 +134,23 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         }
     }
 
+    // Method need for disabled all on press action when loading
+    const disabled = () => {
+        if (isloading || refreshing || loadMore) return true
+        return false
+    }
+
     const renderItem = ({ item }: any) => {
         return (
             <Item
-                senderBank={item.sender_bank}
-                beneficiaryBank={item.beneficiary_bank}
-                beneficiaryName={item.beneficiary_name}
-                amount={item.amount}
-                date={item.created_at}
+                senderBank={toTitleCase(item.sender_bank)}
+                beneficiaryBank={toTitleCase(item.beneficiary_bank)}
+                beneficiaryName={capitalize(item.beneficiary_name)}
+                amount={currencyFormat(item.amount)}
+                date={formatDate(item.created_at)}
                 status={item.status}
                 onPress={() => navigation.navigate('TransactionDetail', { item })}
+                disabled={disabled()}
             />
         )
     }
@@ -156,12 +169,15 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 clearSearch={clearSearch}
                 sortValue={sortValue}
                 setModalVisible={setModalVisible}
-                isLoading={isloading}
+                disabled={disabled()}
             />
             <FlatList
                 data={transactions}
                 extraData={transactions}
                 contentContainerStyle={styles.content}
+                initialNumToRender={7}
+                removeClippedSubviews={true}
+                maxToRenderPerBatch={5}
                 refreshing={refreshing}
                 onRefresh={() => onRefresh()}
                 ItemSeparatorComponent={ItemSeparator}

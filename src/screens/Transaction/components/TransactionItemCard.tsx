@@ -10,11 +10,12 @@ type Props = {
     flagStyle?: React.CSSProperties | {},
     children: React.ReactNode,
     onPress?: () => void,
+    disabled: boolean,
 }
 
-const TransactionItemCard: FC<Props> = ({ style, flagStyle, children, onPress }: Props) => {
+const TransactionItemCard: FC<Props> = ({ style, flagStyle, children, onPress, disabled }: Props) => {
     return (
-        <Pressable onPress={onPress}>
+        <Pressable onPress={onPress} disabled={disabled}>
             <Card style={[styles.card, style]}>
                 {children}
             </Card>
