@@ -32,6 +32,7 @@ type Props = {
     navigation: TransactionScreenNavigationProp
 }
 
+// Promise function for acting fetch next page data in loadmore
 const wait = (timeout: number) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
@@ -69,15 +70,15 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
 
     const handleSearch = (text: string) => {
         setSearchText(text)
-        let temp = tempData
 
-        let filtered = temp.filter(item => {
+        let filtered = transactions.filter(item => {
             let query = text.toLowerCase()
             return contains(item, query)
         })
         setTransactions(filtered)
         handleSort(sortValue, filtered)
 
+        // Rollback transaction data when no input search text
         if (text.length <= 0) {
             setTransactions(tempData)
             handleSort(sortValue, tempData)
@@ -94,12 +95,15 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         setSortValue(value)
 
         if (value == URUTKAN) {
+            // Set data to initial value
             if (data == undefined) {
                 setTransactions(transactions)
             } else {
                 setTransactions(data)
             }
         } else {
+            // sorted data
+            // Create new array for sorting, need this because sort updating the default data
             let temp = data == undefined ? transactions.slice(0) : data.slice(0)
             let sorted = temp.sort((a, b) => {
                 return sortedBy(a, b, value)
@@ -119,7 +123,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
 
     const loadMoreData = async () => {
         try {
-            if (!loadMore && currentPage < totalPage) {
+            if (searchText == '' && !loadMore && currentPage < totalPage) {
                 setLoadMore(true)
                 await wait(2000)
                 setCurrentPage(currentPage + 1)
@@ -130,6 +134,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         }
     }
 
+    // Method need for disabled all on press action when loading
     const disabled = () => {
         if (isloading || refreshing || loadMore) return true
         return false
