@@ -97,7 +97,7 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
         if (value == URUTKAN) {
             // Set data to initial value
             if (data == undefined) {
-                setTransactions(transactions)
+                setTransactions(tempData)
             } else {
                 setTransactions(data)
             }
