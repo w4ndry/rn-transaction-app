@@ -9,7 +9,7 @@ import { formatDate } from '../../utils/dateFormat'
 import { Container } from '../../components/container'
 import { WHITE_COLOR, GREY_COLOR, PRIMARY_COLOR } from '../../themes/colors'
 import { toTitleCase, capitalize, currencyFormat } from '../../utils/stringManipulation'
-import { View, StyleSheet, Pressable, Image, Animated, TouchableOpacity, Clipboard, ToastAndroid } from 'react-native'
+import { View, StyleSheet, Pressable, Image, Animated, TouchableOpacity, Clipboard, ToastAndroid, ScrollView } from 'react-native'
 import { PADDING, PADDING_TOP, BORDER_WIDTH_REGULAR, PADDING_RIGHT, FONT_WEIGHT_BOLD, FONT_SIZE_MEDIUM, MARGIN_BOTTOM, MARGIN_TOP } from '../../themes/themes'
 import { ID_TRANSAKSI, DETAIL_TRANSAKSI, TUTUP, LIHAT, BERITA_TRANSFER, KODE_UNIK, WAKTU_DIBUAT, NOMINAL } from '../../constants/label'
 import BankName from './components/BankName'
@@ -104,19 +104,21 @@ const TransactionDetailScreen: FC<Props> = ({ route }: Props) => {
 
     return (
         <Container style={styles.container}>
-            <View style={styles.titleBox}>
-                <Label style={styles.titleText}>{ID_TRANSAKSI}{item.id}</Label>
-                <TouchableOpacity onPress={() => copyToClipboard(item.id)}>
-                    <Image source={require('../../assets/icons/outline_content_copy_black_48.png')} style={styles.iconCopy} />
-                </TouchableOpacity>
-            </View>
-            <Pressable style={styles.detailBox} onPress={() => showDetail()}>
-                <Label style={styles.titleText}>{DETAIL_TRANSAKSI}</Label>
-                <View>
-                    <Label style={styles.closeText}>{isShowDetail ? TUTUP : LIHAT}</Label>
+            <ScrollView>
+                <View style={styles.titleBox}>
+                    <Label style={styles.titleText}>{ID_TRANSAKSI}{item.id}</Label>
+                    <TouchableOpacity onPress={() => copyToClipboard(item.id)}>
+                        <Image source={require('../../assets/icons/outline_content_copy_black_48.png')} style={styles.iconCopy} />
+                    </TouchableOpacity>
                 </View>
-            </Pressable>
-            {item.id && renderDetail()}
+                <Pressable style={styles.detailBox} onPress={() => showDetail()}>
+                    <Label style={styles.titleText}>{DETAIL_TRANSAKSI}</Label>
+                    <View>
+                        <Label style={styles.closeText}>{isShowDetail ? TUTUP : LIHAT}</Label>
+                    </View>
+                </Pressable>
+                {item.id && renderDetail()}
+            </ScrollView>
         </Container>
     )
 }
