@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import HomeScreenScreen from '../screens/Home/HomeScreen'
+import TransactionScreen from '../screens/Transaction/TransactionScreen'
+import TransactionDetailScreen from '../screens/Transaction/TransactionDetailScreen'
+import { TRANSACTION_DETAIL_TITLE } from '../constants/label'
 
 const { Navigator, Screen } = createNativeStackNavigator()
 
@@ -9,9 +11,14 @@ const AppStack: FC = () => {
     return (
         <Navigator>
             <Screen
-                name="HomeScreen"
-                component={HomeScreenScreen}
+                name="Transaction"
+                component={TransactionScreen}
                 options={{ headerShown: false }}
+            />
+            <Screen
+                name="TransactionDetail"
+                component={TransactionDetailScreen}
+                options={{ title: TRANSACTION_DETAIL_TITLE }}
             />
         </Navigator>
     )
