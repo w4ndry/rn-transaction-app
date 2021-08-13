@@ -15,6 +15,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { get } from '../../services/APIService'
 import { TransactionItem } from './types'
 import { Spinner } from '../../components/spinners/Spinner'
+import { toTitleCase, capitalize, currencyFormat } from '../../utils/stringManipulation'
+import { formatDate } from '../../utils/dateFormat'
 
 type RootStackParamList = {
     Transaction: undefined,
@@ -136,11 +138,11 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
     const renderItem = ({ item }: any) => {
         return (
             <Item
-                senderBank={item.sender_bank}
-                beneficiaryBank={item.beneficiary_bank}
-                beneficiaryName={item.beneficiary_name}
-                amount={item.amount}
-                date={item.created_at}
+                senderBank={toTitleCase(item.sender_bank)}
+                beneficiaryBank={toTitleCase(item.beneficiary_bank)}
+                beneficiaryName={capitalize(item.beneficiary_name)}
+                amount={currencyFormat(item.amount)}
+                date={formatDate(item.created_at)}
                 status={item.status}
                 onPress={() => navigation.navigate('TransactionDetail', { item })}
                 disabled={disabled()}
@@ -168,6 +170,9 @@ const TransactionScreen: FC<Props> = ({ navigation }: Props) => {
                 data={transactions}
                 extraData={transactions}
                 contentContainerStyle={styles.content}
+                initialNumToRender={7}
+                removeClippedSubviews={true}
+                maxToRenderPerBatch={5}
                 refreshing={refreshing}
                 onRefresh={() => onRefresh()}
                 ItemSeparatorComponent={ItemSeparator}

@@ -1,21 +1,19 @@
 import React, { FC } from 'react'
-import { Text, StyleSheet, View, Image } from 'react-native'
+import { Text, StyleSheet, View } from 'react-native'
 
 import BankName from './BankName'
 import { Label } from '../../../components/texts'
 import TransactionItemCard from './TransactionItemCard'
-import { formatDate } from '../../../utils/dateFormat'
 import { SECONDARY_COLOR } from '../../../themes/colors'
 import { PENGECEKAN, BERHASIL, PENDING, SUCCESS } from '../../../constants/label'
 import { SecondaryLabelStatus, PrimaryLabelStatus } from '../../../components/label-status'
-import { toTitleCase, capitalize, currencyFormat } from '../../../utils/stringManipulation'
 import { FONT_WEIGHT_BOLD, FONT_SIZE_SMALL } from '../../../themes/themes'
 
 type Props = {
     senderBank: string,
     beneficiaryBank: string,
     beneficiaryName: string,
-    amount: number,
+    amount: string,
     date: string,
     status: string,
     onPress: () => void,
@@ -36,11 +34,11 @@ const Item: FC<Props> = ({ senderBank, beneficiaryBank, beneficiaryName, amount,
         <TransactionItemCard flagStyle={flagStyle} onPress={onPress} disabled={disabled}>
             <View style={styles.textWrapper}>
                 <BankName
-                    senderBank={toTitleCase(senderBank)}
-                    beneficiaryBank={toTitleCase(beneficiaryBank)}
+                    senderBank={senderBank}
+                    beneficiaryBank={beneficiaryBank}
                 />
-                <Label style={styles.subTitle}>{capitalize(beneficiaryName)}</Label>
-                <Label style={styles.subTitle}>{currencyFormat(amount)} <Text style={styles.dotText}>.</Text> {formatDate(date)} </Label>
+                <Label style={styles.subTitle}>{beneficiaryName}</Label>
+                <Label style={styles.subTitle}>{amount} <Text style={styles.dotText}>.</Text> {date} </Label>
             </View>
             {renderLabelStatus(status)}
         </TransactionItemCard>
